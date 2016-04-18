@@ -2,10 +2,12 @@ require 'oystercard'
 
 describe Oystercard do
   let (:oystercard) { Oystercard.new }
+  let (:entry_station) { double :entry_station}
 
   describe '#balance' do
-    it 'defaults to 0' do
-      expect(oystercard.balance).to eq 0
+    it 'has a default starting balance' do
+      d_s_b = Oystercard::DEFAULT_STARTING_BALANCE
+      expect(oystercard.balance).to eq d_s_b
     end
 
     it 'can be created with a starting balance' do
@@ -26,31 +28,33 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'reduces balance on card' do
-      oystercard.top_up 1
-      expect{ oystercard.deduct 1 }.to change{ oystercard.balance }.by -1
-    end
-  end
-
   it 'a new card is not in a journey' do
     expect(oystercard).not_to be_in_journey
   end
 
-  describe '#touch_in' do
-    it 'a card that has been touched in will be in a journey' do
-      oystercard.top_up(10)
-      oystercard.touch_in
-      expect(oystercard).to be_in_journey
-    end
+  it 'a new card has no entry station' do
+    expect(oystercard.entry_station).to be_nil
+  end
 
+  describe '#touch_in' do
     context '0 balance' do
-      it 'touch in raises error' do
+      it 'raises error' do
         err_msg = 'Not enough balance for fare'
         expect{ oystercard.touch_in }.to raise_error err_msg
       end
     end
 
+    context '£10 on card' do
+      before {oystercard.top_up(10); oystercard.touch_in}
+      it 'a card that has been touched in will be in a journey' do
+        oystercard.touch_in
+        expect(oystercard).to be_in_journey
+      end
+
+      it 'a card that has been touched in will have an entry station' do
+        expect(oystercard.entry_station).to eq entry_station
+      end
+    end
   end
 
   describe '#touch_out' do

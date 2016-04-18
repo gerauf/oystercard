@@ -15,7 +15,6 @@ class Oystercard
     @balance += cash
   end
 
-
   def touch_in
     fail 'Not enough balance for fare' if balance_too_low?
     @in_journey = true
@@ -27,7 +26,11 @@ class Oystercard
   end
 
   def in_journey?
-    @in_journey
+    in_journey
+  end
+
+  def entry_station
+
   end
 
 
@@ -40,7 +43,7 @@ class Oystercard
   def balance_too_low?
     balance < MIN_FARE
   end
-  
+
   def deduct(value)
     @balance -= value
   end
