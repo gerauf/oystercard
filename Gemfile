@@ -1,14 +1,7 @@
 source 'https://rubygems.org'
 
-ruby '2.2.3'
+ruby '2.3.0'
 
-gem 'rspec'
-
-
-group :development do
-  gem 'rspec'
-end
-
-group :test do
+group :development, :test do
   gem 'rspec'
 end
