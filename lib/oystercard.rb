@@ -9,7 +9,7 @@ class Oystercard
   end
 
   def top_up(cash)
-    fail "Feck off" if exceeds_max_balance?(cash)
+    fail "Max balance of £#{MAX_BALANCE} exceeded" if exceeds_max_balance?(cash)
     @balance += cash
   end
 

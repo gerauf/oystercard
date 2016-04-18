@@ -20,8 +20,9 @@ describe Oystercard do
     end
     it 'raises error if max balance exceeded' do
       max_balance = Oystercard::MAX_BALANCE
+      err_msg = "Max balance of £#{max_balance} exceeded"
       oystercard.top_up max_balance
-      expect{oystercard.top_up 1}.to raise_error "Feck off"
+      expect{oystercard.top_up 1}.to raise_error err_msg
     end
 
   end
