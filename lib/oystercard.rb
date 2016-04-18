@@ -1,11 +1,8 @@
 class Oystercard
+  attr_reader :balance
 
-  def initialize
-    @balance = 0
-  end
-
-  def show_balance
-    balance
+  def initialize(starting_balance = DEFAULT_STARTING_BALANCE)
+    @balance = starting_balance
   end
 
   def add(cash)
@@ -15,6 +12,6 @@ class Oystercard
 
   private
 
-  attr_reader :balance
+  DEFAULT_STARTING_BALANCE = 0
 
 end
