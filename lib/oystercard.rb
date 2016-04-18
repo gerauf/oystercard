@@ -13,10 +13,19 @@ class Oystercard
     @balance += cash
   end
 
+  def deduct(value)
+    fail "Insufficient funds" if balance_too_low?(value)
+    @balance -= value
+  end
+
 
   private
   def exceeds_max_balance?(cash)
     (balance + cash) > MAX_BALANCE
+  end
+
+  def balance_too_low?(value)
+    balance - value < 0
   end
 
 end

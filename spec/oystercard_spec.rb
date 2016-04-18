@@ -24,7 +24,18 @@ describe Oystercard do
       oystercard.top_up max_balance
       expect{oystercard.top_up 1}.to raise_error err_msg
     end
+  end
 
+  describe '#deduct' do
+    err_msg = "Insufficient funds"
+    it 'raises error if balance is changed to below 0' do
+      expect{ oystercard.deduct 1 }.to raise_error err_msg
+    end
+
+    it 'is reduces the balance by the amount given' do
+      oystercard.top_up 1
+      expect{ oystercard.deduct 1 }.to change{ oystercard.balance }.by -1
+    end
   end
 
 end
