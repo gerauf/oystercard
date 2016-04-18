@@ -5,11 +5,11 @@ describe Oystercard do
   let (:oystercard_with10) { Oystercard.new(10) }
 
   describe '#balance' do
-    it 'new oystercards have a default 0 balance' do
+    it 'defaults to 0' do
       expect(oystercard.balance).to eq 0
     end
 
-    it 'new oystercards can be created with a starting balance' do
+    it 'can be created with a starting balance' do
       expect(oystercard_with10.balance).to eq 10
     end
   end
@@ -27,15 +27,36 @@ describe Oystercard do
   end
 
   describe '#deduct' do
-    err_msg = "Insufficient funds"
-    it 'raises error if balance is changed to below 0' do
-      expect{ oystercard.deduct 1 }.to raise_error err_msg
-    end
-
-    it 'is reduces the balance by the amount given' do
+    it 'reduces balance on card' do
       oystercard.top_up 1
       expect{ oystercard.deduct 1 }.to change{ oystercard.balance }.by -1
     end
+
+    it 'raises error if deduction would reduce to below 0' do
+      err_msg = "Insufficient funds"
+      expect{ oystercard.deduct 1 }.to raise_error err_msg
+    end
   end
+
+  it 'a new card is not in a journey' do
+    expect(oystercard).not_to be_in_journey
+  end
+
+  describe '#touch_in' do
+    it 'a card that has been touched in will be in a journey' do
+      oystercard.touch_in
+      expect(oystercard).to be_in_journey
+    end
+  end
+
+  describe '#touch_out' do
+    it "a card that has touched out after touching in won't be in a journey" do
+      oystercard.touch_in
+      oystercard.touch_out
+      expect(oystercard).not_to be_in_journey
+    end
+  end
+
+
 
 end
