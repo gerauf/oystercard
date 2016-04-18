@@ -31,11 +31,6 @@ describe Oystercard do
       oystercard.top_up 1
       expect{ oystercard.deduct 1 }.to change{ oystercard.balance }.by -1
     end
-
-    it 'raises error if deduction would reduce to below 0' do
-      err_msg = "Insufficient funds"
-      expect{ oystercard.deduct 1 }.to raise_error err_msg
-    end
   end
 
   it 'a new card is not in a journey' do
@@ -44,16 +39,24 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'a card that has been touched in will be in a journey' do
-      oystercard.touch_in
-      expect(oystercard).to be_in_journey
+      oystercard_with10.touch_in
+      expect(oystercard_with10).to be_in_journey
     end
+
+    context '0 balance' do
+      it 'touch in raises error' do
+        err_msg = 'Not enough balance for fare'
+        expect{ oystercard.touch_in }.to raise_error err_msg
+      end
+    end
+
   end
 
   describe '#touch_out' do
     it "a card that has touched out after touching in won't be in a journey" do
-      oystercard.touch_in
-      oystercard.touch_out
-      expect(oystercard).not_to be_in_journey
+      oystercard_with10.touch_in
+      oystercard_with10.touch_out
+      expect(oystercard_with10).not_to be_in_journey
     end
   end
 

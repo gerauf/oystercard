@@ -3,6 +3,7 @@ class Oystercard
 
   DEFAULT_STARTING_BALANCE = 0
   MAX_BALANCE = 90
+  MIN_FARE = 1
 
   def initialize(starting_balance = DEFAULT_STARTING_BALANCE)
     @balance = starting_balance
@@ -15,11 +16,11 @@ class Oystercard
   end
 
   def deduct(value)
-    fail "Insufficient funds" if balance_too_low?(value)
     @balance -= value
   end
 
   def touch_in
+    fail 'Not enough balance for fare' if balance_too_low?
     @in_journey = true
   end
 
@@ -38,8 +39,8 @@ class Oystercard
     (balance + cash) > MAX_BALANCE
   end
 
-  def balance_too_low?(value)
-    balance - value < 0
+  def balance_too_low?
+    balance < MIN_FARE
   end
 
 end
