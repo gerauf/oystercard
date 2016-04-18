@@ -2,7 +2,6 @@ require 'oystercard'
 
 describe Oystercard do
   let (:oystercard) { Oystercard.new }
-  let (:oystercard_with10) { Oystercard.new(10) }
 
   describe '#balance' do
     it 'defaults to 0' do
@@ -10,7 +9,8 @@ describe Oystercard do
     end
 
     it 'can be created with a starting balance' do
-      expect(oystercard_with10.balance).to eq 10
+      oystercard = Oystercard.new(10)
+      expect(oystercard.balance).to eq 10
     end
   end
 
@@ -39,8 +39,9 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'a card that has been touched in will be in a journey' do
-      oystercard_with10.touch_in
-      expect(oystercard_with10).to be_in_journey
+      oystercard.top_up(10)
+      oystercard.touch_in
+      expect(oystercard).to be_in_journey
     end
 
     context '0 balance' do
@@ -53,10 +54,16 @@ describe Oystercard do
   end
 
   describe '#touch_out' do
+    before {oystercard.top_up(10); oystercard.touch_in}
+
     it "a card that has touched out after touching in won't be in a journey" do
-      oystercard_with10.touch_in
-      oystercard_with10.touch_out
-      expect(oystercard_with10).not_to be_in_journey
+      oystercard.touch_out
+      expect(oystercard).not_to be_in_journey
+    end
+
+    it "reduces balance by minimum fare" do
+      min_fare = Oystercard::MIN_FARE
+      expect{oystercard.touch_out}.to change{oystercard.balance}.by(-min_fare)
     end
   end
 
