@@ -21,21 +21,22 @@ class Oystercard
 
 	def touch_out
 		@in_journey = false
+		deduct MIN_FARE
 	end
 
-	def top_up(amount)
-		fail "Can't top up over £#{MAX_BALANCE}" if exceeded_max?(amount)
+	def top_up amount
+		fail "Can't top up over £#{MAX_BALANCE}" if exceeded_max? amount
 		@balance += amount
 	end
 
-  def deduct(fare)
-    @balance -= fare
-  end
-
   private
   attr_reader :in_journey
-  def exceeded_max?(amount)
+  def exceeded_max? amount
     (balance + amount) > MAX_BALANCE
+  end
+
+  def deduct fare
+    @balance -= fare
   end
 
   def enough_credit?

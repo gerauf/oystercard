@@ -13,8 +13,6 @@ describe Oystercard do
 		expect(oyster).not_to be_in_journey
 	end
 
-	it {is_expected.to respond_to(:touch_out)}
-
 	context "when touched in" do
 		before {oyster.top_up(Oystercard::MIN_FARE)}
 		before {oyster.touch_in}
@@ -35,16 +33,9 @@ describe Oystercard do
 			expect { oyster.top_up 1 }.to change{ oyster.balance }.by 1
 			# expect(Oystercard.new.top_up(3)).to eq 3
 		end
-		it "top up maximum of £90" do
+		it "maximum balance of £90" do
 			oyster.top_up(Oystercard::MAX_BALANCE)
 			expect { oyster.top_up(6) }.to raise_error "Can't top up over £90"
-		end
-	end
-
-	describe "#deduct" do
-		it "reduces balance by value of fare" do
-			expect { oyster.deduct 1 }.to change{ oyster.balance }.by -1
-			expect { oyster.deduct 2 }.to change{ oyster.balance }.by -2
 		end
 	end
 
@@ -59,4 +50,44 @@ describe Oystercard do
 		end
 	end
 
+	describe "#touch_out" do
+		before {oyster.top_up(Oystercard::MIN_FARE)}
+		before {oyster.touch_in}
+		it "deducts money from card" do
+			expect {oyster.touch_out}.to change{ oyster.balance }.by -Oystercard::MIN_FARE
+		end 
+	end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
