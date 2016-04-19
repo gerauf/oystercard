@@ -3,7 +3,7 @@ require 'oystercard'
 describe Oystercard do
 
 	let(:oyster) { Oystercard.new }
-
+	let(:station) { double :station }
 
 	it "default balance is £0" do
 		expect(oyster.balance).to eq 0
@@ -15,7 +15,7 @@ describe Oystercard do
 
 	context "when touched in" do
 		before {oyster.top_up(Oystercard::MIN_FARE)}
-		before {oyster.touch_in}
+		before {oyster.touch_in(station)}
 		it "is in journey" do
 			expect(oyster).to be_in_journey
 		end
@@ -40,54 +40,36 @@ describe Oystercard do
 	end
 
 	describe "#touch_in" do
+
 		it 'raises error if balance is below minimum fare' do
-			expect {oyster.touch_in}.to raise_error "Not enough credit"
+			expect {oyster.touch_in(station)}.to raise_error "Not enough credit"
 		end
 
-		it 'can touch in if enough credit' do
-			oyster.top_up(Oystercard::MIN_FARE)
-			expect(oyster.touch_in).to eq true
+		context 'minimum fare on card' do
+			before { oyster.top_up(Oystercard::MIN_FARE) }
+
+			it 'records the last entry station' do
+				oyster.touch_in(station)
+				expect(oyster.entry_station).to eq station
+			end
 		end
+
 	end
 
 	describe "#touch_out" do
 		before {oyster.top_up(Oystercard::MIN_FARE)}
-		before {oyster.touch_in}
+		before {oyster.touch_in(station)}
 		it "deducts money from card" do
 			expect {oyster.touch_out}.to change{ oyster.balance }.by -Oystercard::MIN_FARE
-		end 
+		end
+
+		it 'entry station set to nil' do
+			oyster.touch_out
+			expect(oyster.entry_station).to be_nil
+		end
+
+		it "returns msg that you have touched out" do
+			expect(oyster.touch_out).to eq "You have left the building"
+		end
 	end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
