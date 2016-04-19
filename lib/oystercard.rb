@@ -3,27 +3,28 @@ class Oystercard
 	MAX_BALANCE = 90
   MIN_FARE = 1
 
-	attr_reader :balance, :entry_station
+	attr_reader :balance, :entry_station, :exit_station, :journeys
 
 	def initialize
 		@balance = 0
-    @entry_station = nil
+    @journeys = []
+    @journey = {}
 	end
 
 	def in_journey?
-		# @entry_station != nil
-		!!@entry_station
+		!@journey.empty?
   end
 
 	def touch_in station
     fail "Not enough credit" unless enough_credit?
-    @entry_station = station
+    @journey[:entry_station] = station
 	end
 
-	def touch_out
-		deduct MIN_FARE
-    @entry_station = nil
-    "You have left the building"
+	def touch_out station
+    @journey[:exit_station] = station
+    @journeys << @journey
+    @journey = {}
+    deduct MIN_FARE
 	end
 
 	def top_up amount

@@ -4,9 +4,15 @@ describe Oystercard do
 
 	let(:oyster) { Oystercard.new }
 	let(:station) { double :station }
+	let(:station2) { double :station }
+	let(:journey) {{entry_station: station, exit_station: station2}}
 
 	it "default balance is £0" do
 		expect(oyster.balance).to eq 0
+	end
+
+	it "journey history is empty" do
+		expect(oyster.journeys).to be_empty
 	end
 
 	it "not in journey" do
@@ -21,7 +27,7 @@ describe Oystercard do
 		end
 
 		context "when touched out" do
-			before {oyster.touch_out}
+			before {oyster.touch_out station2}
 			it "is not in journey" do
 				expect(oyster).not_to be_in_journey
 			end
@@ -45,31 +51,32 @@ describe Oystercard do
 			expect {oyster.touch_in(station)}.to raise_error "Not enough credit"
 		end
 
-		context 'minimum fare on card' do
-			before { oyster.top_up(Oystercard::MIN_FARE) }
-
-			it 'records the last entry station' do
-				oyster.touch_in(station)
-				expect(oyster.entry_station).to eq station
-			end
-		end
-
 	end
 
 	describe "#touch_out" do
 		before {oyster.top_up(Oystercard::MIN_FARE)}
 		before {oyster.touch_in(station)}
 		it "deducts money from card" do
-			expect {oyster.touch_out}.to change{ oyster.balance }.by -Oystercard::MIN_FARE
+			expect {oyster.touch_out station2}.to change{ oyster.balance }.by -Oystercard::MIN_FARE
 		end
 
 		it 'entry station set to nil' do
-			oyster.touch_out
+			oyster.touch_out station2
 			expect(oyster.entry_station).to be_nil
 		end
+	end
 
-		it "returns msg that you have touched out" do
-			expect(oyster.touch_out).to eq "You have left the building"
+	context "after one journey" do
+		before {oyster.top_up(Oystercard::MIN_FARE)}
+		before {oyster.touch_in station}
+		before {oyster.touch_out station2}
+
+		describe '#journeys' do
+			it 'shows entry and exit stations' do
+					expect(oyster.journeys).to include journey
+			end
+
 		end
+
 	end
 end
