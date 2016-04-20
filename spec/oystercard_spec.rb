@@ -2,10 +2,10 @@ require 'oystercard'
 
 describe Oystercard do
 
-	let(:oyster) { described_class.new }
-	let(:station) { double :station }
-	let(:station2) { double :station }
-	let(:journey) {{entry_station: station, exit_station: station2}}
+	let(:oyster) 		{ described_class.new }
+	let(:station) 	{ double :station, name: "stn1", zone: 1 }
+	let(:station2) 	{ double :station, name: "stn2", zone: 5 }
+	let(:journey) 	{{entry_station: ["stn1", 1], exit_station: ["stn2", 5]}}
 
 	it "default balance is £0" do
 		expect(oyster.balance).to eq 0
@@ -68,7 +68,7 @@ describe Oystercard do
 		before {oyster.touch_out station2}
 
 		describe '#journeys' do
-			it 'shows entry and exit stations' do
+			it 'shows name and zones of entry and exit stations' do
 					expect(oyster.journeys).to include journey
 			end
 		end

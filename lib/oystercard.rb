@@ -17,11 +17,11 @@ class Oystercard
 
 	def touch_in station
     fail "Not enough credit" unless enough_credit?
-    @journey[:entry_station] = station
+    @journey[:entry_station] = [station.name, station.zone]
 	end
 
 	def touch_out station
-    @journey[:exit_station] = station
+    @journey[:exit_station] = [station.name, station.zone]
     @journeys << @journey
     @journey = {}
     deduct MIN_FARE
