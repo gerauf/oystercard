@@ -2,7 +2,7 @@ require 'oystercard'
 
 describe Oystercard do
 
-	let(:oyster) { Oystercard.new }
+	let(:oyster) { described_class.new }
 	let(:station) { double :station }
 	let(:station2) { double :station }
 	let(:journey) {{entry_station: station, exit_station: station2}}
@@ -20,7 +20,7 @@ describe Oystercard do
 	end
 
 	context "when touched in" do
-		before {oyster.top_up Oystercard::MIN_FARE }
+		before {oyster.top_up described_class::MIN_FARE }
 		before {oyster.touch_in(station)}
 		it "is in journey" do
 			expect(oyster).to be_in_journey
@@ -40,7 +40,7 @@ describe Oystercard do
 			# expect(Oystercard.new.top_up(3)).to eq 3
 		end
 		it "maximum balance of £90" do
-			oyster.top_up Oystercard::MAX_BALANCE
+			oyster.top_up described_class::MAX_BALANCE
 			expect { oyster.top_up(6) }.to raise_error "Can't top up over £90"
 		end
 	end
@@ -54,16 +54,16 @@ describe Oystercard do
 	end
 
 	describe "#touch_out" do
-		before {oyster.top_up Oystercard::MIN_FARE }
+		before {oyster.top_up described_class::MIN_FARE }
 		before {oyster.touch_in(station)}
 		it "deducts money from card" do
-			expect {oyster.touch_out station2}.to change{ oyster.balance }.by -Oystercard::MIN_FARE
+			expect {oyster.touch_out station2}.to change{ oyster.balance }.by -described_class::MIN_FARE
 		end
 
 	end
 
 	context "after one journey" do
-		before {oyster.top_up Oystercard::MIN_FARE }
+		before {oyster.top_up described_class::MIN_FARE }
 		before {oyster.touch_in station}
 		before {oyster.touch_out station2}
 
