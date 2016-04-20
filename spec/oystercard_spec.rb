@@ -5,7 +5,7 @@ describe Oystercard do
 	let(:oyster) 		{ described_class.new }
 	let(:station) 	{ double :station, name: "stn1", zone: 1 }
 	let(:station2) 	{ double :station, name: "stn2", zone: 5 }
-	let(:journey) 	{{entry_station: ["stn1", 1], exit_station: ["stn2", 5]}}
+	let(:journey) 	{{start: ["stn1", 1], finish: ["stn2", 5]}}
 
 	it "default balance is £0" do
 		expect(oyster.balance).to eq 0
@@ -50,14 +50,17 @@ describe Oystercard do
 		it 'raises error if balance is below minimum fare' do
 			expect {oyster.touch_in(station)}.to raise_error "Not enough credit"
 		end
-
 	end
 
 	describe "#touch_out" do
 		before {oyster.top_up described_class::MIN_FARE }
-		before {oyster.touch_in(station)}
 		it "deducts money from card" do
+			oyster.touch_in(station)
 			expect {oyster.touch_out station2}.to change{ oyster.balance }.by -described_class::MIN_FARE
+		end
+
+		it "deducts PEN_FARE if not touched in" do
+			expect {oyster.touch_out station2}.to change{ oyster.balance }.by -6
 		end
 
 	end

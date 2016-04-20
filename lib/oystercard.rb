@@ -8,23 +8,23 @@ class Oystercard
 	def initialize
 		@balance = 0
     @journeys = []
-    @journey = {}
 	end
 
 	def in_journey?
-		!@journey.empty?
+		!!@trip
   end
 
 	def touch_in station
     fail "Not enough credit" unless enough_credit?
-    @journey[:entry_station] = [station.name, station.zone]
+		@trip = Journey.new
+		@trip.start station
 	end
 
 	def touch_out station
-    @journey[:exit_station] = [station.name, station.zone]
-    @journeys << @journey
-    @journey = {}
-    deduct MIN_FARE
+		@trip.finish station
+		@journeys << @trip.log
+		deduct @trip.fare
+		@trip = nil
 	end
 
 	def top_up amount
