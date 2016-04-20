@@ -50,19 +50,25 @@ describe Journey do
     end
   end
   describe "#fare" do
-    it 'finished journey to be MIN_FARE' do
+    it 'penalty fare if just tap out' do
+      pen_fare = described_class::PEN_FARE
+      journey.finish stn2
+      expect(journey.fare).to eq pen_fare
+    end
+
+    it 'min fare if tap out and tap in' do
       min_fare = described_class::MIN_FARE
       journey.start stn1
       journey.finish stn2
       expect(journey.fare).to eq min_fare
     end
-
-    it 'unfinished journey to be PEN_FARE' do
-      pen_fare = described_class::PEN_FARE
-      expect(journey.fare).to eq pen_fare
-      journey.start stn1
-      expect(journey.fare).to eq pen_fare
-    end
+    #
+    # it 'unfinished journey to be PEN_FARE' do
+    #   pen_fare = described_class::PEN_FARE
+    #   expect(journey.fare).to eq pen_fare
+    #   journey.start stn1
+    #   expect(journey.fare).to eq pen_fare
+    # end
   end
 
 end

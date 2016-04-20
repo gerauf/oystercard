@@ -6,7 +6,6 @@ class Journey
 
   def initialize
     @log = {}
-    @fare = PEN_FARE
   end
 
   def start station
@@ -15,7 +14,10 @@ class Journey
 
   def finish station
     make_log(:finish, station)
-    @fare = MIN_FARE
+  end
+
+  def fare
+    log[:start].nil? ? PEN_FARE : MIN_FARE
   end
 
   private
