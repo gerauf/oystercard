@@ -1,4 +1,6 @@
 require './lib/oystercard.rb'
+require './lib/journey_log.rb'
+require './lib/journey.rb'
 require './lib/station.rb'
 
 oyster = Oystercard.new
@@ -9,8 +11,8 @@ battersea = Station.new("battersea",3)
 
 p oyster.balance
 
-# oyster.touch_in(aldgate)
-# oyster.touch_out(battersea)
+oyster.touch_in(aldgate)
+oyster.touch_out(battersea)
 # p oyster.balance
 # p oyster
 
